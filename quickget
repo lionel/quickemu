@@ -881,11 +881,14 @@ function make_vm_config() {
             IMAGE_TYPE="iso";;
     esac
 
+    CONF_FILE_BASE="${OS}-${RELEASE}"
     if [ -n "${EDITION}" ]; then
-        CONF_FILE="${OS}-${RELEASE}-${EDITION}.conf"
-    else
-        CONF_FILE="${OS}-${RELEASE}.conf"
+        CONF_FILE_BASE="${CONF_FILE_BASE}-${EDITION}"
     fi
+    if [ -n "${TAG}" ]; then
+        CONF_FILE_BASE="${CONF_FILE_BASE}-${TAG}"
+    fi
+    CONF_FILE="${CONF_FILE_BASE}.conf"
 
     if [ ! -e "${CONF_FILE}" ]; then
         echo "Making ${CONF_FILE}"
@@ -2259,6 +2262,10 @@ fi
 LANGS=()
 languages_windows
 
+if [ -n "${3}" ]; then
+    TAG="${3}"
+fi
+
 if [ -n "${1}" ]; then
     OS="${1,,}"
     if [ "${OS}" == "list" ] || [ "${OS}" == "list_csv" ]; then
@@ -2285,7 +2292,7 @@ fi
 
 if [ -n "${2}" ]; then
     RELEASE="${2,,}"
-    VM_PATH="${OS}-${RELEASE}"
+    [ -n "${TAG}" ] && VM_PATH="${OS}-${RELEASE}"-"${TAG}" || VM_PATH="${OS}-${RELEASE}"
 
     # If the OS has an editions_() function, use it.
     if [[ $(type -t "editions_${OS}") == function ]]; then
