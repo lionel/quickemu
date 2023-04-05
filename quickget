@@ -102,6 +102,33 @@ function validate_release() {
   fi
 }
 
+function cached_web_get {
+    OS="${1}"
+    RELEASE="${2}"
+    URL_ISO="${3}/${4}"
+    VM_PATH="${5}"
+
+    CACHE_DIR=__wget_cache__
+    CACHED_RELEASE_DIR="${CACHE_DIR}/${OS}-${RELEASE}"
+
+    if [ -e "${VM_PATH}" ] ; then
+        echo "ERROR: Already exists: ${VM_PATH}"
+        return 1
+    fi
+    [ -e "${CACHED_RELEASE_DIR}"/"${ISO}" ] && HAVE_CACHED=true || HAVE_CACHED=false
+    if [ ! -d "${RELEASE_DIR}" ] ; then
+        mkdir -p "${RELEASE_DIR}"
+    fi
+    if ! ${HAVE_CACHED} ; then
+        echo "Missing '${CACHED_RELEASE_DIR}/${ISO}', so downloading it into the cache."
+        web_get "${URL_ISO}" "${CACHED_RELEASE_DIR}"
+    fi
+    echo "Creating: ${VM_PATH}"
+    mkdir -p  "${VM_PATH}"
+    ln "${CACHED_RELEASE_DIR}"/"${ISO}"  "${VM_PATH}"/"${ISO}"
+    return $?
+}
+
 function list_json() {
   # Reference: https://stackoverflow.com/a/67359273
   list_csv | jq -R 'split(",") as $h|reduce inputs as $in ([]; . += [$in|split(",")|. as $a|reduce range(0,length) as $i ({};.[$h[$i]]=$a[$i])])'
@@ -1759,8 +1786,9 @@ function get_ubuntu() {
         zsync_get "${URL}/${ISO}" "${VM_PATH}" "${OS}-devel.iso"
         make_vm_config "${OS}-devel.iso"
     else
-        web_get "${URL}/${ISO}" "${VM_PATH}"
-        check_hash "${ISO}" "${HASH}"
+        echo "Get ISO=${ISO} from cache if possible"
+        cached_web_get $OS $RELEASE "${URL}" "${ISO}" "${VM_PATH}" || return $?
+        check_hash "${ISO}" "${HASH}" || return $?
         make_vm_config "${ISO}"
     fi
 }
