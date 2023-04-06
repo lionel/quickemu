@@ -118,7 +118,12 @@ function cached_web_get {
     fi
     echo "Creating: ${VM_PATH}"
     mkdir -p  "${VM_PATH}"
-    ln "${CACHED_RELEASE_DIR}"/"${ISO}"  "${VM_PATH}"/"${ISO}"
+    if true ; then
+        ln "${CACHED_RELEASE_DIR}"/"${ISO}"  "${VM_PATH}"/"${ISO}"
+    else
+        ln "${CACHED_RELEASE_DIR}"/"${ISO}"  "${VM_PATH}"/"${ISO}" 2>/dev/null && _LN_WORKED=true || _LN_WORKED=false
+        ! ${_LN_WORKED} && echo "WARNING: Hardlink failed, so copying instead." && cp -p "${CACHED_RELEASE_DIR}"/"${ISO}"  "${VM_PATH}"/"${ISO}"
+    fi
     return $?
 }
 
