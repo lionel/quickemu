@@ -860,9 +860,13 @@ function vm_boot() {
   fi
 
   if [ "${guest_os}" != "windows" ] && [ -n "${PUBLIC}" ]; then
+    echo " - host:     On guest: $(hostname)"
+    echo " - here:     On guest: $HOME/$(hostname)/$(pwd)"
     echo -n " - 9P:       On guest: "
+    [ "${PUBLIC}" = "/" ] && MAYBE_REMAP_9P_MOUNT="multidevs=remap,"
     if [ "${guest_os}" == "linux" ]; then
-      echo "sudo mount -t 9p -o trans=virtio,version=9p2000.L,msize=104857600 ${PUBLIC_TAG} ~/$(basename "${PUBLIC}")"
+        #echo "sudo mount -t 9p -o trans=virtio,version=9p2000.L,${MAYBE_REMAP_9P_MOUNT}msize=104857600 ${PUBLIC_TAG} ~/$(basename "${PUBLIC}")"
+        echo "sudo mount -t 9p -o trans=virtio,version=9p2000.L,${MAYBE_REMAP_9P_MOUNT}msize=104857600 ${PUBLIC_TAG} ~/lion"
     elif [ "${guest_os}" == "macos" ]; then
       # PUBLICSHARE needs to be world writeable for seamless integration with
       # macOS. Test if it is world writeable, and prompt what to do if not.
@@ -1116,7 +1120,7 @@ function vm_boot() {
   if [ "${guest_os}" != "windows" ] && [ -n "${PUBLIC}" ]; then
       # shellcheck disable=SC2054
       args+=(-fsdev local,id=fsdev0,path="${PUBLIC}",security_model=mapped-xattr
-             -device virtio-9p-pci,fsdev=fsdev0,mount_tag="${PUBLIC_TAG}")
+             -device virtio-9p-pci,fsdev=fsdev0,${MAYBE_REMAP_DEVICE}mount_tag="${PUBLIC_TAG}")
   fi
 
   if [ -n "${USB_PASSTHROUGH}" ]; then
