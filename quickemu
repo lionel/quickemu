@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 export LC_ALL=C
 
+DEBUGGING=true
+$DEBUGGING && echo "ARGS=$*"
+
 if ((BASH_VERSINFO[0] < 4)); then
   echo "Sorry, you need bash 4.0 or newer to run this script."
   exit 1
@@ -1529,6 +1532,7 @@ if [ $# -lt 1 ]; then
     exit 0
 else
     while [ $# -gt 0 ]; do
+        $DEBUGGING && echo "ARGS=$*"
         case "${1}" in
           -braille|--braille)
             BRAILLE="on"
@@ -1576,7 +1580,8 @@ else
             SHORTCUT=1
             shift;;
           -vm|--vm)
-            VM="${2}"
+              VM="${2}"
+              $DEBUGGING && echo "VM=${VM}"
             shift
             shift;;
           -viewer|--viewer)
