@@ -225,6 +225,15 @@ function capitalize {
     fi
 }
 
+function is-set {
+    _VAR=$1
+    if [ "$(uname -s)" = "Darwin" ] ; then
+        set | grep '^'${_VAR}'=' >/dev/null
+    else
+        [ -v "${_VAR}" ]
+    fi
+}
+
 function vm_boot() {
   local AUDIO_DEV=""
   local BALLOON="-device virtio-balloon"
@@ -792,7 +801,7 @@ function vm_boot() {
   esac
 
   # Configure multiscreen if max_outputs was provided in the .conf file
-  if [ -v max_outputs ]; then
+  if is-set max_outputs ; then
     VIDEO="${VIDEO},max_outputs=${max_outputs}"
   fi
 
