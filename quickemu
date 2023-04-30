@@ -1484,6 +1484,13 @@ function is_numeric {
     [[ "$1" =~ ^[0-9]+$ ]]
 }
 
+[ "$(uname -s)" = "Darwin" ] && function realpath {
+    _DIR="${1}"
+    pushd "${_DIR}" >/dev/null || return $?
+    /bin/pwd
+    popd >/dev/null
+}
+
 function monitor_send_cmd {
     local MSG="${1}"
 
