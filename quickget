@@ -2364,7 +2364,6 @@ if [ -n "${2}" ]; then
             fi
         fi
 
-
         VM_PATH="${OS}-${RELEASE}-${EDITION}"
         [ -n "${TAG}" ] && VM_PATH="${VM_PATH}-${TAG}"
         validate_release "releases_${OS}"
