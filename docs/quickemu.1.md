@@ -1,6 +1,6 @@
 ---
 author: Martin Wimpress
-date: February 4, 2023
+date: April 26, 2023
 footer: quickemu
 header: Quickemu User Manual
 section: 1
@@ -166,9 +166,9 @@ above requirements or their equivalents.
 
 These examples may save a little typing
 
-Debian:
+Debian (and direct derivatives such as MX Linux):
 
-    sudo apt install qemu bash coreutils ovmf grep jq lsb procps python3 genisoimage usbutils util-linux sed spice-client-gtk swtpm wget xdg-user-dirs zsync unzip
+    sudo apt install qemu bash coreutils ovmf grep jq lsb-base procps python3 genisoimage usbutils util-linux sed spice-client-gtk libtss2-tcti-swtpm0 wget xdg-user-dirs zsync unzip
 
 Fedora:
 
@@ -246,6 +246,7 @@ with your preferred flavour.
 -   `kubuntu` (Kubuntu)
 -   `lubuntu` (Lubuntu)
 -   `ubuntu-budgie` (Ubuntu Budgie)
+-   `ubuntucinnamon` (Ubuntu Cinnamon)
 -   `ubuntukylin` (Ubuntu Kylin)
 -   `ubuntu-mate` (Ubuntu MATE)
 -   `ubuntustudio` (Ubuntu Studio)
@@ -264,6 +265,7 @@ with your preferred flavour.
 -   `archlinux` (Arch Linux)
 -   `arcolinux` (Arco Linux)
 -   `batocera` (Batocera)
+-   `blendos` (BlendOS)
 -   `cachyos` (CachyOS)
 -   `centos-stream` (CentOS Stream)
 -   `debian` (Debian)
@@ -272,10 +274,10 @@ with your preferred flavour.
 -   `dragonflybsd` (DragonFlyBSD)
 -   `elementary` (elementary OS)
 -   `endeavouros` (EndeavourOS)
+-   `endless` (Endless OS)
 -   `fedora` (Fedora)
 -   `freebsd` (FreeBSD)
 -   `freedos` (FreeDOS)
--   `garuda` (Garuda Linux)
 -   `gentoo` (Gentoo)
 -   `ghostbsd` (GhostBSD)
 -   `haiku` (Haiku)
@@ -291,18 +293,21 @@ with your preferred flavour.
 -   `netbsd` (NetBSD)
 -   `nixos` (NixOS)
 -   `openbsd` (OpenBSD)
+-   `openindiana` (OpenIndiana)
 -   `opensuse` (openSUSE)
 -   `oraclelinux` (Oracle Linux)
 -   `popos` (Pop!\_OS)
 -   `reactos` (ReactOS)
 -   `rebornos` (RebornOS)
 -   `rockylinux` (Rocky Linux)
+-   `siduction` (Siduction)
 -   `slackware` (Slackware)
 -   `solus` (Solus)
 -   `tails` (Tails)
 -   `truenas-core` (TrueNAS Core)
 -   `truenas-scale` (TrueNAS Scale)
 -   `void` (Void Linux)
+-   `vxlinux` (VX Linux)
 -   `zorin` (Zorin OS)
 
 Or you can download a Linux image and manually create a VM
@@ -489,13 +494,6 @@ automatically, but does automatically create an optimised virtual
 machine configuration that you can just add an Windows .iso image to.
 This configuration also includes the [VirtIO drivers for
 Windows](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/).
-`quickget` can automatically download Windows 8.1, [Windows
-10](https://www.microsoft.com/en-gb/software-download/windows10ISO) and
-[Windows
-11](https://www.microsoft.com/en-gb/software-download/windows11) along
-with the [VirtIO drivers for
-Windows](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/)
-and creates a virtual machine configuration.
 
 ``` bash
 quickget windows 11
