@@ -2287,7 +2287,7 @@ create_vm() {
     #echo "${URL}"
     #echo "${ISO}"
     #echo "${HASH}"
-    web_get "${URL}" "${VM_PATH}"
+    cached_web_get "${URL}" "${ISO}" "${VM_PATH}" || return $?
 
     if [ -n "${HASH}" ]; then
       check_hash "${ISO}" "${HASH}"
