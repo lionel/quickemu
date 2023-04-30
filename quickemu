@@ -225,6 +225,16 @@ function capitalize {
     fi
 }
 
+function file-size {
+    _FILE="${1}"
+    if [ "$(uname -s)" = "Darwin" ] ; then
+        eval $(stat -s "${_FILE}")
+        echo $st_size
+    else
+        stat -c%s "${_FILE}"
+    fi
+}
+
 function is-set {
     _VAR=$1
     if [ "$(uname -s)" = "Darwin" ] ; then
@@ -658,7 +668,7 @@ function vm_boot() {
     else
       # Only check disk image size if preallocation is off
       if [ "${preallocation}" == "off" ]; then
-        DISK_CURR_SIZE=$(stat -c%s "${disk_img}")
+        DISK_CURR_SIZE=$(file-size "${disk_img}")
         if [ "${DISK_CURR_SIZE}" -le "${DISK_MIN_SIZE}" ]; then
           echo "             Looks unused, booting from ${iso}${img}"
           if [ -z "${iso}" ] && [ -z "${img}" ]; then
