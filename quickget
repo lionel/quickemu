@@ -759,6 +759,23 @@ function editions_zorin() {
     echo core64 lite64 education64 edulite64
 }
 
+function check_mac_iso_hash_with_algo {
+    iso="${1}"
+    hash="${2}"
+    algo="${3}"
+    hash_file="$(dirname ${iso})/.hash-$(basename ${iso})"
+    echo ${hash} >${hash_file}
+    openssl ${algo} -signature ${hash_file} ${iso}
+    return $?
+}
+
+function check_sum_iso_hash_with_algo {
+    iso="${1}"
+    hash="${2}"
+    algo="${3}"
+    echo "${hash} ${iso}" | ${algo}sum --check --status
+}
+
 function check_hash() {
     local iso=""
     local hash=""
@@ -768,16 +785,17 @@ function check_hash() {
 
     # Guess the hash algorithm by the hash length
     case ${#hash} in
-      32) hash_algo=md5sum;;
-      40) hash_algo=sha1sum;;
-      64) hash_algo=sha256sum;;
-      128) hash_algo=sha512sum;;
+      32) hash_algo=md5;;
+      40) hash_algo=sha1;;
+      64) hash_algo=sha256;;
+      128) hash_algo=sha512;;
        *) echo "WARNING! Can't guess hash algorithm, not checking ${iso} hash."
           return;;
     esac
 
-    echo -n "Checking ${iso} with ${hash_algo}... "
-    if ! echo "${hash} ${iso}" | ${hash_algo} --check --status; then
+    [ "$(uname -s)" != "Darwin" ] && HASH_CMD=check_sum_iso_hash_with_algo || HASH_CMD=check_mac_iso_hash_with_algo
+    echo -n "Checking ${iso} with ${HASH_CMD}... "
+    if ! ${HASH_CMD} ${iso} ${hash} ${hash_algo} ; then
         echo "ERROR!"
         echo "${iso} doesn't match ${hash}. Try running 'quickget' again."
         exit 1
