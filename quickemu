@@ -207,6 +207,15 @@ function efi_vars() {
   fi
 }
 
+function to-lowercase {
+    _S=$1
+    if [ "$(uname -s)" = "Darwin" ] ; then
+        python -c 'print("'${_S}'".lower())'
+    else
+        echo ${_S,,}
+    fi
+}
+
 function vm_boot() {
   local AUDIO_DEV=""
   local BALLOON="-device virtio-balloon"
@@ -337,8 +346,8 @@ function vm_boot() {
   fi
 
   # Force to lowercase.
-  boot=${boot,,}
-  guest_os=${guest_os,,}
+  boot="$(to-lowercase ${boot})"
+  guest_os="$(to-lowercase ${guest_os})"
 
   if [ "${guest_os}" == "macos" ] || [ "${guest_os}" == "windows" ]; then
     # Display MSRs alert if the guest is macOS or windows
@@ -1723,7 +1732,7 @@ if [ -n "${VM}" ] && [ -e "${VM}" ]; then
       exit 1
     fi
 
-    PUBLIC_TAG="Public-${USER,,}"
+    PUBLIC_TAG="Public-$(to-lowercase ${USER})"
     # shellcheck disable=SC2012
     PUBLIC_PERMS=$(ls -ld "${PUBLIC}" | cut -d' ' -f1)
   fi
