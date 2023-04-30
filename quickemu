@@ -216,6 +216,15 @@ function to-lowercase {
     fi
 }
 
+function capitalize {
+    _S=$1
+    if [ "$(uname -s)" = "Darwin" ] ; then
+        python -c 'print("'${_S}'".capitalize())'
+    else
+        echo ${_S^}
+    fi
+}
+
 function vm_boot() {
   local AUDIO_DEV=""
   local BALLOON="-device virtio-balloon"
@@ -468,7 +477,7 @@ function vm_boot() {
     fi
     BOOT_STATUS="EFI (${guest_os^}), OVMF (${EFI_CODE}), SecureBoot (${secureboot})."
   else
-    BOOT_STATUS="Legacy BIOS (${guest_os^})"
+    BOOT_STATUS="Legacy BIOS ($(capitalize ${guest_os}))"
     boot="legacy"
     secureboot="off"
   fi
@@ -762,9 +771,9 @@ function vm_boot() {
     else
       DISPLAY_DEVICE="${DISPLAY_DEVICE},virgl=on"
     fi
-    echo " - Display:  ${OUTPUT^^}, ${DISPLAY_DEVICE}, GL (${gl}), VirGL (on)"
+    echo " - Display:  $(capitalize ${OUTPUT}), ${DISPLAY_DEVICE}, GL (${gl}), VirGL (on)"
   else
-    echo " - Display:  ${OUTPUT^^}, ${DISPLAY_DEVICE}, GL (${gl}), VirGL (off)"
+    echo " - Display:  $(capitalize ${OUTPUT}), ${DISPLAY_DEVICE}, GL (${gl}), VirGL (off)"
   fi
 
   # Build the video configuration
