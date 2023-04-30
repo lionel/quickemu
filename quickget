@@ -2310,7 +2310,7 @@ LANGS=()
 languages_windows
 
 if [ -n "${1}" ]; then
-    OS="${1,,}"
+    OS="${1}"
     if [ "${OS}" == "list" ] || [ "${OS}" == "list_csv" ]; then
         list_csv
     elif [ "${OS}" == "list_json" ]; then
@@ -2334,7 +2334,7 @@ if [[ ! $(os_support) =~ ${OS} ]]; then
 fi
 
 if [ -n "${2}" ]; then
-    RELEASE="${2,,}"
+    RELEASE="${2}"
     VM_PATH="${OS}-${RELEASE}"
 
     # If the OS has an editions_() function, use it.
