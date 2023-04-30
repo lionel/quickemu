@@ -25,6 +25,24 @@ function cleanup() {
   fi
 }
 
+function to-lowercase {
+    _S=$1
+    if [ "$(uname -s)" = "Darwin" ] ; then
+        python -c 'print("'${_S}'".lower())'
+    else
+        echo ${_S,,}
+    fi
+}
+
+function to-uppercase {
+    _S=$1
+    if [ "$(uname -s)" = "Darwin" ] ; then
+        python -c 'print("'${_S}'".upper())'
+    else
+        echo ${_S^}
+    fi
+}
+
 function pretty_name() {
   local SIMPLE_NAME=""
   local PRETTY_NAME=""
