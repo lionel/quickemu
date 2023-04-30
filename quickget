@@ -2290,10 +2290,6 @@ fi
 LANGS=()
 languages_windows
 
-if [ -n "${3}" ]; then
-    TAG="${3}"
-fi
-
 if [ -n "${1}" ]; then
     OS="${1,,}"
     if [ "${OS}" == "list" ] || [ "${OS}" == "list_csv" ]; then
@@ -2320,7 +2316,7 @@ fi
 
 if [ -n "${2}" ]; then
     RELEASE="${2,,}"
-    [ -n "${TAG}" ] && VM_PATH="${OS}-${RELEASE}"-"${TAG}" || VM_PATH="${OS}-${RELEASE}"
+    VM_PATH="${OS}-${RELEASE}"
 
     # If the OS has an editions_() function, use it.
     if [[ $(type -t "editions_${OS}") == function ]]; then
@@ -2335,6 +2331,9 @@ if [ -n "${2}" ]; then
                 done
                 exit 1
             fi
+            TAG="${4}"
+        else
+            TAG="${3}"
         fi
 
         # Handle odd missing fedora cominations
@@ -2348,17 +2347,21 @@ if [ -n "${2}" ]; then
 
 
         VM_PATH="${OS}-${RELEASE}-${EDITION}"
+        [ -n "${TAG}" ] && VM_PATH="${VM_PATH}-${TAG}"
         validate_release "releases_${OS}"
         create_vm "$("get_${OS}" "${EDITION}")"
     elif [ "${OS}" == "macos" ]; then
+        TAG="${3}"
         # macOS doesn't use create_vm()
         validate_release releases_macos
         get_macos
     elif [[ "${OS}" == *"ubuntu"* ]]; then
+        TAG="${3}"
         # Ubuntu doesn't use create_vm()
         validate_release releases_ubuntu
         get_ubuntu
     elif [[ "${OS}" == *"deepin"* ]]; then
+        TAG="${3}"
         # deepin doesn't use create_vm()
         validate_release releases_deepin
         get_deepin
@@ -2373,11 +2376,15 @@ if [ -n "${2}" ]; then
                 done
                 exit 1
             fi
+            TAG="${4}"
+        else
+            TAG="${3}"
         fi
         # Windows doesn't use create_vm()
         validate_release releases_windows
         get_windows "${LANG}"
     else
+        TAG="${3}"
         validate_release "releases_${OS}"
         create_vm "$("get_${OS}")"
     fi
