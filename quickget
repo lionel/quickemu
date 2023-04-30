@@ -78,7 +78,7 @@ function pretty_name() {
     void)               PRETTY_NAME="Void Linux";;
     vxlinux)            PRETTY_NAME="VX Linux";;
     zorin)              PRETTY_NAME="Zorin OS";;
-    *)                  PRETTY_NAME="${SIMPLE_NAME^}";;
+    *)                  PRETTY_NAME="${SIMPLE_NAME}";;
   esac
   echo "${PRETTY_NAME}"
 }
