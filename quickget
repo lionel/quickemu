@@ -103,25 +103,26 @@ function validate_release() {
 }
 
 function cached_web_get {
-    OS="${1}"
-    RELEASE="${2}"
-    URL_ISO="${3}/${4}"
-    VM_PATH="${5}"
-
-    CACHE_DIR=__wget_cache__
-    CACHED_RELEASE_DIR="${CACHE_DIR}/${OS}-${RELEASE}"
+    URL_ISO="${1}/${2}"
+    VM_PATH="${3}"
+    #  $OS $RELEASE [$EDITION] are globals
 
     if [ -e "${VM_PATH}" ] ; then
         echo "ERROR: Already exists: ${VM_PATH}"
         return 1
     fi
+
+    CACHE_DIR=__iso_cache__
+    CACHED_RELEASE_DIR="${CACHE_DIR}/${OS}-${RELEASE}"
+    [ -n "$EDITION" ] && CACHED_RELEASE_DIR="${CACHED_RELEASE_DIR}-${EDITION}"
+
     [ -e "${CACHED_RELEASE_DIR}"/"${ISO}" ] && HAVE_CACHED=true || HAVE_CACHED=false
-    if [ ! -d "${RELEASE_DIR}" ] ; then
-        mkdir -p "${RELEASE_DIR}"
+    if [ ! -d "${CACHED_RELEASE_DIR}" ] ; then
+        mkdir -p "${CACHED_RELEASE_DIR}"
     fi
     if ! ${HAVE_CACHED} ; then
         echo "Missing '${CACHED_RELEASE_DIR}/${ISO}', so downloading it into the cache."
-        web_get "${URL_ISO}" "${CACHED_RELEASE_DIR}"
+        web_get "${URL_ISO}" "${CACHED_RELEASE_DIR}" || return $?
     fi
     echo "Creating: ${VM_PATH}"
     mkdir -p  "${VM_PATH}"
@@ -1787,7 +1788,7 @@ function get_ubuntu() {
         make_vm_config "${OS}-devel.iso"
     else
         echo "Get ISO=${ISO} from cache if possible"
-        cached_web_get $OS $RELEASE "${URL}" "${ISO}" "${VM_PATH}" || return $?
+        cached_web_get "${URL}" "${ISO}" "${VM_PATH}" || return $?
         check_hash "${ISO}" "${HASH}" || return $?
         make_vm_config "${ISO}"
     fi
