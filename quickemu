@@ -1437,7 +1437,7 @@ function usage() {
 }
 
 function display_param_check() {
-  if [ "${OUTPUT}" != "gtk" ] && [ "${OUTPUT}" != "none" ] && [ "${OUTPUT}" != "sdl" ] && [ "${OUTPUT}" != "spice" ] && [ "${OUTPUT}" != "spice-app" ]; then
+  if [ "${OUTPUT}" != "gtk" ] && [ "${OUTPUT}" != "none" ] && [ "${OUTPUT}" != "sdl" ] && [ "${OUTPUT}" != "spice" ] && [ "${OUTPUT}" != "spice-app" ] && [ "${OUTPUT}" != "cocoa" ]; then
     echo "ERROR! Requested output '${OUTPUT}' is not recognised."
     exit 1
   fi
@@ -1532,7 +1532,7 @@ function monitor_send_cmd {
 ### MAIN
 
 # Lowercase variables are used in the VM config file only
-boot="efi"
+[ "$(uname -s)" = "Darwin" ] && boot="legacy" || boot="efi"
 cpu_cores=""
 disk_img=""
 disk_size=""
